@@ -35,3 +35,50 @@ def booking_data():
         },
         "additionalneeds": "Cigars"
     }
+@pytest.fixture
+def old_user():
+    return {
+        "firstname": "Alexey",
+        "lastname": "ARjdj",
+        "totalprice": 63636363,
+        "depositpaid": False,
+        "bookingdates": {
+            "checkin": "2034-04-05",
+            "checkout": "2023-04-02"
+        },
+        "additionalneeds": "Wine"
+    }
+@pytest.fixture
+def create_reservation(old_user):
+    response = requests.post(f"{BASE_URL}/booking", json= old_user)
+    data = response.json()
+    book_id = data["bookingid"]
+    assert response.status_code == 200, f"Бронирование не создано , код: {response.status_code}"
+    return book_id
+
+@pytest.fixture
+def booking_data_patch():
+    return {
+        "firstname": faker.first_name(),
+        "lastname": faker.last_name()
+    }
+@pytest.fixture
+def bad_reservation():
+    return {
+            "lastname": "ARjdj",
+            "totalprice": 63636363,
+            "depositpaid": False,
+            "bookingdates": {
+                "checkin": "2034-04-05",
+                "checkout": "2023-04-02"
+            },
+            "additionalneeds": "Wine"
+
+    }
+
+@pytest.fixture
+def booking_data_patch_bad():
+    return {
+        "firstname": None,
+        "lastname": faker.last_name()
+    }
