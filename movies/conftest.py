@@ -1,7 +1,7 @@
 import pytest
 import requests
 from faker import Faker
-from constants import HEADERS, BASE_URL
+from Module_4.movies.constants import HEADERS, BASE_URL
 
 faker = Faker()
 

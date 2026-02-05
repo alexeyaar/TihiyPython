@@ -8,10 +8,12 @@ class DataGenerator:
     @staticmethod
     def generate_random_email():
         random_string = "".join(random.choices(string.ascii_lowercase + string.digits, k=8))
+
         return f"kek{random_string}@gmail.com"
 
     @staticmethod
     def generate_random_name():
+        print(f"{faker.first_name()} {faker.last_name()}")
         return f"{faker.first_name()} {faker.last_name()}"
 
     @staticmethod
@@ -26,4 +28,6 @@ class DataGenerator:
         password = list(letters + digits + remaining_chars)
         random.shuffle(password)
         return ''.join(password)
+
+
 
