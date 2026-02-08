@@ -2,14 +2,13 @@ import pytest
 import requests
 from faker import Faker
 from Module_4.movies.constants import HEADERS, BASE_URL
-
+from requester import *
 faker = Faker()
 
 @pytest.fixture(scope="session")
 def auth_session():
     session = requests.Session()
     session.headers.update(HEADERS)
-
     response = requests.post(
         f"{BASE_URL}/auth",
         headers=HEADERS,
@@ -18,7 +17,6 @@ def auth_session():
     assert response.status_code == 200, "Ошибка авторизации"
     token = response.json().get("token")
     assert token is not None, "В ответе не оказалось токена"
-
     session.headers.update({"Cookie": f"token={token}"})
     return session
 
@@ -30,10 +28,10 @@ def booking_data():
         "totalprice": faker.random_int(min=100, max=100000),
         "depositpaid": True,
         "bookingdates": {
-            "checkin": "2024-04-05",
-            "checkout": "2024-04-08"
+            "checkin": faker.date(),
+            "checkout": faker.date()
         },
-        "additionalneeds": "Cigars"
+        "additionalneeds": faker.text()
     }
 @pytest.fixture
 def old_user():
@@ -82,3 +80,15 @@ def booking_data_patch_bad():
         "firstname": None,
         "lastname": faker.last_name()
     }
+
+@pytest.fixture(scope="session")
+def requesters(auth_session):
+    session = requests.Session()
+    return CustomRequester(session=auth_session,base_url=BASE_URL)
+
+
+@pytest.fixture(scope="session")
+def public_requester():
+    session = requests.Session()
+    session.headers.update(HEADERS)
+    return CustomRequester(session=session, base_url=BASE_URL)
